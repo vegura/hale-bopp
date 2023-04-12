@@ -44,5 +44,6 @@ public class S3StorageService implements ResourceService {
       ByteArrayInputStream resourceStream = new ByteArrayInputStream(resourceBytes);
 //      s3Client.putObject(BUCKET_NAME, resourceId, resourceStream, );
     }
+    return Promise.promise();
   }
 }
