@@ -1,0 +1,11 @@
+version: "3"
+services:
+  db:
+    container_name: "resource_db"
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: willy_w0nka
+      POSTGRES_PASSWORD: ch0kol@te_factory
+      POSTGRES_DB: resource_meta
