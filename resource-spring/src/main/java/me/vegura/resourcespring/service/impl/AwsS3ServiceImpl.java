@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.vegura.resourcespring.service.AwsS3Service;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
@@ -37,9 +37,9 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     }
 
     @Override
-    public CompletableFuture<ResponseInputStream<GetObjectResponse>> getObject(String bucketName, String s3Key) {
+    public CompletableFuture<ResponseBytes<GetObjectResponse>> getObject(String bucketName, String s3Key) {
         var getObjectRequest = GetObjectRequest.builder().bucket(bucketName).key(s3Key).build();
-        return s3Client.getObject(getObjectRequest, AsyncResponseTransformer.toBlockingInputStream());
+        return s3Client.getObject(getObjectRequest, AsyncResponseTransformer.toBytes());
     }
 
     @Override

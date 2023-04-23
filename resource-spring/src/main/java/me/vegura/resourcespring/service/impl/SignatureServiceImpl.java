@@ -1,10 +1,12 @@
 package me.vegura.resourcespring.service.impl;
 
 import me.vegura.resourcespring.service.SignatureService;
+import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@Service
 public class SignatureServiceImpl implements SignatureService {
 
     private static final String SHA_256 = "SHA-256";
