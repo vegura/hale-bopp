@@ -8,6 +8,10 @@ import me.vegura.resourcespring.repository.ResourceMetadataRepository;
 import me.vegura.resourcespring.service.AwsS3Service;
 import me.vegura.resourcespring.service.ResourceService;
 import me.vegura.resourcespring.service.SignatureService;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
@@ -18,6 +22,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import static me.vegura.resourcespring.configuration.RabbitMqConfig.AMQP_RESOURCE_NOTIFICATION_QUEUE;
+
 @Service
 @RequiredArgsConstructor
 public class ResourceServiceImpl implements ResourceService {
@@ -27,6 +33,7 @@ public class ResourceServiceImpl implements ResourceService {
     private final SignatureService signatureService;
     private final AwsS3Service s3Service;
     private final ResourceMetadataRepository resourceMetadataRepository;
+    private final RabbitTemplate mqTemplate;
 
     @Override
     public ResourceCreationRes createResource(byte[] resource) {
@@ -36,7 +43,14 @@ public class ResourceServiceImpl implements ResourceService {
                 new ByteArrayInputStream(resource),
                 resource.length);
         ResourceMetadata saved = resourceMetadataRepository.save(metadata);
-        return new ResourceCreationRes().setId(saved.getId());
+
+        ResourceCreationRes resourceSaveRes = composeResponse(saved);
+        mqTemplate.convertAndSend(AMQP_RESOURCE_NOTIFICATION_QUEUE, resourceSaveRes);
+        return resourceSaveRes;
+    }
+
+    private ResourceCreationRes composeResponse(ResourceMetadata meta) {
+        return new ResourceCreationRes().setId(meta.getId());
     }
 
     @Override
