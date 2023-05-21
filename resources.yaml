@@ -2,7 +2,7 @@ version: "3"
 services:
   rabbit_mq_resource:
     container_name: rabbit_mq_resource
-    image: rabbitmq:3.11
+    image: rabbitmq:3.12-rc-management
     ports:
       - "5672:5672"
       - "15672:15672"

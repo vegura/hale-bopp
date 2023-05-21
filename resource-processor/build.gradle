@@ -21,7 +21,11 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp:3.0.6'
-	implementation 'com.mpatric:mp3agic:0.9.1'
+	implementation 'org.springframework.amqp:spring-rabbit:3.0.4'
+	implementation 'org.apache.tika:tika-core:2.8.0'
+	implementation 'org.apache.tika:tika-parsers:2.8.0'
+	implementation 'org.apache.tika:tika-parsers-standard-package:2.8.0'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

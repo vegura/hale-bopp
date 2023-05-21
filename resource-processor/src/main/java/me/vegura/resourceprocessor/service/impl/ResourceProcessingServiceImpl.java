@@ -5,9 +5,15 @@ import me.vegura.resourceprocessor.consumer.ResourceConnector;
 import me.vegura.resourceprocessor.consumer.SongServiceConnector;
 import me.vegura.resourceprocessor.dto.api.ResourceDTOResponse;
 import me.vegura.resourceprocessor.dto.api.SongCreateMetaRequest;
+import me.vegura.resourceprocessor.exceptions.ResourceFetchException;
+import me.vegura.resourceprocessor.exceptions.ResourceParsingException;
+import me.vegura.resourceprocessor.service.Mp3MetadataParser;
 import me.vegura.resourceprocessor.service.ResourceProcessingService;
+import org.apache.tika.exception.TikaException;
 import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -16,21 +22,27 @@ public class ResourceProcessingServiceImpl implements ResourceProcessingService 
 
     private final ResourceConnector resourceConnector;
     private final SongServiceConnector songServiceConnector;
+    private final Mp3MetadataParser songParser;
 
     @Override
     public void getResourceAndParseMetadata(Long resourceId) {
-        Optional<ResourceDTOResponse> maybeResourceData = resourceConnector.findResourceById(resourceId);
-        if (maybeResourceData.isEmpty())
-            throw new RuntimeException("Unable to fetch resource -> " + resourceId);
+        ResourceDTOResponse resourceDTOResponse = fetchResource(resourceId);
+        Mp3MetadataParser.SongMetadata parsingResult = tryParseData(resourceDTOResponse.getResourceData());
+        songServiceConnector.pushData(SongCreateMetaRequest.fromSongMeta(parsingResult, resourceId));
+    }
 
-        // parse metadata
-        SongCreateMetaRequest songMeta = SongCreateMetaRequest.builder()
-                .name("Name")
-                .album("album")
-                .artist("artist")
-                .resourceId(resourceId)
-                .build();
-        // access to song service
-        songServiceConnector.pushData(songMeta);
+    private Mp3MetadataParser.SongMetadata tryParseData(byte[] resourceData) {
+        try {
+            return songParser.parseMetadataFrom(resourceData);
+        } catch (TikaException | IOException | SAXException e) {
+            throw new ResourceParsingException(e);
+        }
+    }
+
+    private ResourceDTOResponse fetchResource(Long resourceId) {
+        Optional<ResourceDTOResponse> maybeResourceById = resourceConnector.findResourceById(resourceId);
+        if (maybeResourceById.isEmpty())
+            throw new ResourceFetchException("Unable to fetch resource");
+        return maybeResourceById.get();
     }
 }

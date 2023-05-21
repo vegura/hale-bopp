@@ -20,12 +20,10 @@ public class ResourceConnectorImpl implements ResourceConnector {
     @Value("${resource-service.port}")
     private String resourceServicePort;
 
-    private final String FETCH_RESOURCE_URL = "http://" + resourceServiceHost + ":" + resourceServicePort + API_PREFIX;
-
     @Override
     public Optional<ResourceDTOResponse> findResourceById(Long id) {
         RestTemplate restTemplate = new RestTemplate();
-        String resourcePath = FETCH_RESOURCE_URL + "/" + id;
+        String resourcePath = "http://" + resourceServiceHost + ":" + resourceServicePort + API_PREFIX + "/" + id;
 
         ResponseEntity<ResourceDTOResponse> response = restTemplate.getForEntity(resourcePath, ResourceDTOResponse.class);
         ResourceDTOResponse resourceData = response.getBody();

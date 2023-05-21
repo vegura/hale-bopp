@@ -1,6 +1,9 @@
 package me.vegura.resourcespring.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.vegura.resourcespring.domain.ResourceMetadata;
 import me.vegura.resourcespring.dto.ResourceCreationRes;
 import me.vegura.resourcespring.dto.ResourceResponse;
@@ -17,6 +20,7 @@ import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 
 import java.io.ByteArrayInputStream;
+import java.io.Writer;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,10 +29,11 @@ import java.util.concurrent.ExecutionException;
 import static me.vegura.resourcespring.configuration.RabbitMqConfig.AMQP_RESOURCE_NOTIFICATION_QUEUE;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor @Slf4j
 public class ResourceServiceImpl implements ResourceService {
 
     private static final String BUCKET_NAME = "hale-bopp-music2";
+    private static final String ROUTING_KEY = "rabbitmq.resource-data";
 
     private final SignatureService signatureService;
     private final AwsS3Service s3Service;
@@ -45,7 +50,13 @@ public class ResourceServiceImpl implements ResourceService {
         ResourceMetadata saved = resourceMetadataRepository.save(metadata);
 
         ResourceCreationRes resourceSaveRes = composeResponse(saved);
-        mqTemplate.convertAndSend(AMQP_RESOURCE_NOTIFICATION_QUEUE, resourceSaveRes);
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            log.info("Sending message -> {}", objectMapper.writeValueAsString(resourceSaveRes));
+            mqTemplate.convertAndSend(ROUTING_KEY, objectMapper.writeValueAsString(resourceSaveRes));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         return resourceSaveRes;
     }
 
