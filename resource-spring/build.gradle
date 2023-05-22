@@ -26,6 +26,7 @@ dependencies {
 	implementation 'software.amazon.awssdk:sts'
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'commons-io:commons-io:2.11.0'
+	implementation 'org.springframework.boot:spring-boot-starter-amqp:3.0.6'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
