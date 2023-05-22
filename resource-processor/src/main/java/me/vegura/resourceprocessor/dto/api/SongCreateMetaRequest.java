@@ -16,16 +16,18 @@ public class SongCreateMetaRequest implements Serializable {
     private String artist;
     private String album;
     private Long length;
-    private Long resourceId;
+    private String resourceId;
     private String year;
 
     public static SongCreateMetaRequest fromSongMeta(Mp3MetadataParser.SongMetadata metadata, Long resourceId) {
+        Long length = (long) Double.parseDouble(metadata.getLength());
         return SongCreateMetaRequest.builder()
                 .name(metadata.getName())
                 .artist(metadata.getArtist())
                 .album(metadata.getAlbum())
-                .resourceId(resourceId)
+                .resourceId(resourceId.toString())
                 .year(metadata.getYear())
+                .length(length)
                 .build();
     }
 }
