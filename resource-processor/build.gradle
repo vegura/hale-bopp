@@ -31,6 +31,18 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+sourceSets.test {
+	resources {
+		srcDirs(file("src/test/java"), file("src/test/scala"))
+		exclude("**/*.java")
+		exclude("**/*.scala")
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+task apiTests(type: JavaExec) {
+
 }
