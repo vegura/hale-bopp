@@ -5,4 +5,5 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <include file="db/changelog/ddl/create_song_table.sql" relativeToChangelogFile="false"/>
+    <include file="db/changelog/ddl/create_index_on_resource_id_field.sql" relativeToChangelogFile="false"/>
 </databaseChangeLog>

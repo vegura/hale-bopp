@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface SongService {
     SongSaveResponse createSong(SongRequest request);
     Optional<SongGetResponse> getSongBy(Long id);
+    Optional<SongGetResponse> getSongByResource(String id);
     SongDeleteResponse deleteSongsBy(List<Long> ids);
 }
