@@ -1,6 +1,5 @@
 package me.vegura.resourceprocessor.consumer.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.vegura.resourceprocessor.consumer.SongServiceConnector;
 import me.vegura.resourceprocessor.dto.api.SongCreateMetaRequest;

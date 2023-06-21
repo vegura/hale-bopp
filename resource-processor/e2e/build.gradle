@@ -1,0 +1,37 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.0'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'scala'
+}
+
+group = 'me.vegura'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	testImplementation("com.intuit.karate:karate-apache:0.9.6")
+	testImplementation("com.intuit.karate:karate-junit5:1.1.0")
+	testImplementation("net.masterthought:cucumber-reporting:3.8.0")
+	testImplementation("com.intuit.karate:karate-gatling:1.1.0")
+	testImplementation("org.apache.httpcomponents:httpclient:4.5")
+	testImplementation('org.testcontainers:mysql:1.16.2')
+	testImplementation('io.gatling:gatling-app') {
+		version {
+			strictly '3.6.1'
+			because """there is a ClassNotFoundException: io.netty.handler.codec.http.HttpHeaderValues
+                when using transitive 3.6.0 version that is included in karate-gatling:1.1.0. This only
+                happens when using http DSL instead of karate DSL
+                """
+		}
+	}
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

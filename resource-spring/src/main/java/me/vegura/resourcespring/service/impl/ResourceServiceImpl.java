@@ -11,29 +11,31 @@ import me.vegura.resourcespring.repository.ResourceMetadataRepository;
 import me.vegura.resourcespring.service.AwsS3Service;
 import me.vegura.resourcespring.service.ResourceService;
 import me.vegura.resourcespring.service.SignatureService;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 
 import java.io.ByteArrayInputStream;
-import java.io.Writer;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-
-import static me.vegura.resourcespring.configuration.RabbitMqConfig.AMQP_RESOURCE_NOTIFICATION_QUEUE;
 
 @Service
 @RequiredArgsConstructor @Slf4j
 public class ResourceServiceImpl implements ResourceService {
 
     private static final String BUCKET_NAME = "hale-bopp-music2";
-    private static final String ROUTING_KEY = "rabbitmq.resource-data";
+
+    @Value("${rabbitmq.resource-upload.notification.routingkey}")
+    private String resourceUploadNotificationRoutingKey;
+
+    @Value("${rabbitmq.resource-upload.notification.exchange}")
+    private String resourceUploadNotificationExchange;
 
     private final SignatureService signatureService;
     private final AwsS3Service s3Service;
@@ -51,9 +53,13 @@ public class ResourceServiceImpl implements ResourceService {
 
         ResourceCreationRes resourceSaveRes = composeResponse(saved);
         ObjectMapper objectMapper = new ObjectMapper();
+
         try {
             log.info("Sending message -> {}", objectMapper.writeValueAsString(resourceSaveRes));
-            mqTemplate.convertAndSend(ROUTING_KEY, objectMapper.writeValueAsString(resourceSaveRes));
+            mqTemplate.convertAndSend(
+                    resourceUploadNotificationExchange,
+                    resourceUploadNotificationRoutingKey,
+                    objectMapper.writeValueAsString(resourceSaveRes));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

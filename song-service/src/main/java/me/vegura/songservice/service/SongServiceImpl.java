@@ -30,6 +30,11 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
+    public Optional<SongGetResponse> getSongByResource(String resourceId) {
+        return songRepository.findSongByResourceId(resourceId).map(this::fromSongEntity);
+    }
+
+    @Override
     public SongDeleteResponse deleteSongsBy(List<Long> ids) {
         SongDeleteResponse deleteResponse = new SongDeleteResponse();
         ids.stream()

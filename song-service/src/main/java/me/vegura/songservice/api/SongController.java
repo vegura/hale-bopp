@@ -1,6 +1,5 @@
 package me.vegura.songservice.api;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.vegura.songservice.dto.SongDeleteResponse;
 import me.vegura.songservice.dto.SongGetResponse;
@@ -32,6 +31,15 @@ public class SongController {
             return ResponseEntity
                     .notFound()
                     .build();
+
+        return ResponseEntity.ok(maybeSong.get());
+    }
+
+    @GetMapping("/resource/{resourceId}")
+    public ResponseEntity<?> getSongByResourceId(@PathVariable("resourceId") String resourceId) {
+        Optional<SongGetResponse> maybeSong = songService.getSongByResource(resourceId);
+        if (maybeSong.isEmpty())
+            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(maybeSong.get());
     }
