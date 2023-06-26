@@ -51,3 +51,21 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+test.onlyIf {
+    project.hasProperty('runTests')
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "me.vegura.songservice.SongServiceApplication"
+    }
+}
+
+
+bootJar {
+    layered {
+        enabled = true
+    }
+    archiveFileName = "song-service-server.jar"
+}

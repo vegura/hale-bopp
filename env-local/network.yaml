@@ -1,0 +1,11 @@
+version: "3"
+networks:
+  hale_bopp_net:
+
+    driver: bridge
+
+services:
+  manual_checker:
+    image: ubuntu
+    networks:
+      - hale_bopp_net
