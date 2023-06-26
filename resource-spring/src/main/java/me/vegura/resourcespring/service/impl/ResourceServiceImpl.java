@@ -11,6 +11,7 @@ import me.vegura.resourcespring.repository.ResourceMetadataRepository;
 import me.vegura.resourcespring.service.AwsS3Service;
 import me.vegura.resourcespring.service.ResourceService;
 import me.vegura.resourcespring.service.SignatureService;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

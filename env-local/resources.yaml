@@ -1,0 +1,43 @@
+version: "3"
+services:
+  rabbit_mq_resource:
+    container_name: rabbit_mq_resource
+    image: rabbitmq:3.12-rc-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - hale_bopp_net
+
+
+  resource_db:
+    container_name: "resource-service-db"
+    image: postgres:9
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: willy_w0nka
+      POSTGRES_PASSWORD: ch0kol@te_factory
+      POSTGRES_DB: resource_meta
+    networks:
+      - hale_bopp_net
+
+
+  song_db:
+    container_name: "song-service-db"
+    image: postgres:15
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: w1lly_w0nka
+      POSTGRES_PASSWORD: ch0kolate_f@ctory
+      POSTGRES_DB: songs
+    networks:
+      - hale_bopp_net
+
+
+networks:
+  hale_bopp_net:
+    name: "hale_bopp_net"
+    external: true
+

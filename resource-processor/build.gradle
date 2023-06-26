@@ -46,3 +46,21 @@ tasks.named('test') {
 task apiTests(type: JavaExec) {
 
 }
+
+test.onlyIf {
+	project.hasProperty('runTests')
+}
+
+jar {
+	manifest {
+		attributes "Main-Class": "me.vegura.resourceprocessor.ResourceProcessorApplication"
+	}
+}
+
+
+bootJar {
+	layered {
+		enabled = true
+	}
+	archiveFileName = "resource-processor-service-server.jar"
+}

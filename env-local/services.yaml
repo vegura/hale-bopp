@@ -1,0 +1,35 @@
+version: "3"
+services:
+  resource-service:
+    build: ../resource-spring
+    container_name: "resource_service"
+    ports:
+      - "8088:8088"
+    networks:
+      - hale_bopp_net
+
+
+  song-service:
+    build: ../song-service
+    container_name: "song-service"
+    ports:
+      - "8089:8089"
+    networks:
+      - hale_bopp_net
+
+
+  resource-processor:
+    build: ../resource-processor
+    container_name: "resource-processor-service"
+    ports:
+      - "8090:8090"
+    networks:
+      - hale_bopp_net
+    depends_on:
+      - resource-service
+      - song-service
+
+
+networks:
+  hale_bopp_net:
+    external: true
