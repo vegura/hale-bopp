@@ -33,3 +33,21 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+test.onlyIf {
+	project.hasProperty('runTests')
+}
+
+jar {
+	manifest {
+		attributes "Main-Class": "me.vegura.resourcespring.ResourceSpringApplication"
+	}
+}
+
+
+bootJar {
+	layered {
+		enabled = true
+	}
+	archiveFileName = "eureka.jar"
+}

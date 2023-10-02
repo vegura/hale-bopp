@@ -7,6 +7,8 @@ services:
       - "8088:8088"
     networks:
       - hale_bopp_net
+    depends_on:
+      - eureka
 
 
   song-service:
@@ -16,6 +18,8 @@ services:
       - "8089:8089"
     networks:
       - hale_bopp_net
+    depends_on:
+      - eureka
 
 
   resource-processor:
@@ -28,7 +32,27 @@ services:
     depends_on:
       - resource-service
       - song-service
+      - eureka
 
+
+  eureka:
+    build: ../eureka-server
+    container_name: "eureka-service-discovery"
+    ports:
+      - "8761:8761"
+    networks:
+      - hale_bopp_net
+
+
+  hale-bopp-gateway:
+    build: ../hale-bopp-gateway
+    container_name: "gateway-service"
+    ports:
+      - "8000:8000"
+    networks:
+      - hale_bopp_net
+    depends_on:
+      - eureka
 
 networks:
   hale_bopp_net:

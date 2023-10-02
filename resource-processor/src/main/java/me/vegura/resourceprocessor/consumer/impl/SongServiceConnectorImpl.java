@@ -1,6 +1,7 @@
 package me.vegura.resourceprocessor.consumer.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import me.vegura.resourceprocessor.consumer.SongServiceConnector;
 import me.vegura.resourceprocessor.dto.api.SongCreateMetaRequest;
 import me.vegura.resourceprocessor.dto.api.SongCreateMetaResponse;
@@ -12,19 +13,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@RequiredArgsConstructor
 public class SongServiceConnectorImpl implements SongServiceConnector {
 
-    @Value("${song-service.host}")
-    private String songServiceHost;
+    private static final String SONG_SERVICE_LINK = "Song-Service";
 
-    @Value("${song-service.port}")
-    private String songServicePort;
+    private final RestTemplate restTemplate;
 
     @Override
     public void pushData(SongCreateMetaRequest songMetadata) {
-        String path = "http://" + songServiceHost + ":" + songServicePort + API_PREFIX;
+        String path = "http://" + SONG_SERVICE_LINK + API_PREFIX;
         ObjectMapper objectMapper = new ObjectMapper();
-        RestTemplate restTemplate = new RestTemplate();
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setObjectMapper(objectMapper);
         restTemplate.getMessageConverters().add(0, converter);

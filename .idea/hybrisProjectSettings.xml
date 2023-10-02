@@ -8,7 +8,37 @@
             <ModuleSettings />
           </value>
         </entry>
+        <entry key="resource-processor">
+          <value>
+            <ModuleSettings />
+          </value>
+        </entry>
+        <entry key="resource-processor.main">
+          <value>
+            <ModuleSettings />
+          </value>
+        </entry>
+        <entry key="resource-spring">
+          <value>
+            <ModuleSettings />
+          </value>
+        </entry>
+        <entry key="resource-spring.main">
+          <value>
+            <ModuleSettings />
+          </value>
+        </entry>
         <entry key="resource.main">
+          <value>
+            <ModuleSettings />
+          </value>
+        </entry>
+        <entry key="song-service">
+          <value>
+            <ModuleSettings />
+          </value>
+        </entry>
+        <entry key="song-service.main">
           <value>
             <ModuleSettings />
           </value>
