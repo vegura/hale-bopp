@@ -13,4 +13,5 @@ public interface SongService {
     Optional<SongGetResponse> getSongBy(Long id);
     Optional<SongGetResponse> getSongByResource(String id);
     SongDeleteResponse deleteSongsBy(List<Long> ids);
+    List<SongGetResponse> getAllSongs();
 }

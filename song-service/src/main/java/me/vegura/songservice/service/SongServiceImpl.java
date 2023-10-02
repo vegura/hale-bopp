@@ -45,6 +45,11 @@ public class SongServiceImpl implements SongService {
         return deleteResponse;
     }
 
+    @Override
+    public List<SongGetResponse> getAllSongs() {
+        return songRepository.findAll().stream().map(this::fromSongEntity).toList();
+    }
+
     private SongGetResponse fromSongEntity(Song song) {
         return (SongGetResponse) new SongGetResponse()
                 .setId(song.getId())

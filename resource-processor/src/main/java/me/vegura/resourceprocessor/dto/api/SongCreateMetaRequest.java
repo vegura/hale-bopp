@@ -26,7 +26,7 @@ public class SongCreateMetaRequest implements Serializable {
                 .artist(metadata.getArtist())
                 .album(metadata.getAlbum())
                 .resourceId(resourceId.toString())
-                .year(metadata.getYear())
+                .year(metadata.getYear() == null ? "" : metadata.getYear().substring(0, 4))
                 .length(length)
                 .build();
     }
