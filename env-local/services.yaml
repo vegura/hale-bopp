@@ -38,8 +38,8 @@ services:
   eureka:
     build: ../eureka-server
     container_name: "eureka-service-discovery"
-    ports:
-      - "8761:8761"
+    # ports:
+      # - "8761:8761"
     networks:
       - hale_bopp_net
 
