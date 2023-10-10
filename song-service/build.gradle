@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.liquibase:liquibase-core'
     implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.2'
 
     compileOnly('org.projectlombok:lombok:1.18.26')
 

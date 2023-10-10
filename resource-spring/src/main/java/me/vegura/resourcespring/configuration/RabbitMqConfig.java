@@ -23,6 +23,12 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.resource-upload.notification.routingkey}")
     private String routingKey;
 
+    @Value("${rabbitmq.connection.host}")
+    private String rabbitHost;
+
+    @Value("${rabbitmq.connection.port}")
+    private String rabbitPort;
+
     @Bean
     public Queue queue() {
         return new Queue(resourceUploadNotificationQueue, true);
@@ -42,8 +48,8 @@ public class RabbitMqConfig {
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setVirtualHost("/");
-        connectionFactory.setHost("localhost");
-        connectionFactory.setPort(5672);
+        connectionFactory.setHost(rabbitHost);
+        connectionFactory.setPort(Integer.parseInt(rabbitPort));
         connectionFactory.setUsername("guest");
         connectionFactory.setPassword("guest");
         return connectionFactory;

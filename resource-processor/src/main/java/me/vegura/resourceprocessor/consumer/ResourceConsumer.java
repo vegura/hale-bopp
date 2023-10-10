@@ -8,6 +8,7 @@ import me.vegura.resourceprocessor.service.ResourceProcessingService;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,9 +20,13 @@ public class ResourceConsumer {
 
     @RabbitHandler
     public void handleResourceCreateNotification(String message) {
-        log.info("Received resource creation request -> {}", message);
-        ResourceQueueRequest resourceCreationRequest = tryMappingRequest(message);
-        resourceService.getResourceAndParseMetadata(resourceCreationRequest.getId());
+        try {
+            log.info("Received resource creation request -> {}", message);
+            ResourceQueueRequest resourceCreationRequest = tryMappingRequest(message);
+            resourceService.getResourceAndParseMetadata(resourceCreationRequest.getId());
+        } catch (ListenerExecutionFailedException ex) {
+            log.error("Error processing message -> {}", message);
+        }
     }
 
     private ResourceQueueRequest tryMappingRequest(String requestMessage) {

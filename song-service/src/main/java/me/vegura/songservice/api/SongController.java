@@ -24,6 +24,11 @@ public class SongController {
         return songService.createSong(request);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllSongs() {
+        return ResponseEntity.ok(songService.getAllSongs());
+    }
+
     @GetMapping("{id}")
     public ResponseEntity<?> getSong(@PathVariable("id") Long id) {
         Optional<SongGetResponse> maybeSong = songService.getSongBy(id);

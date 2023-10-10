@@ -42,7 +42,7 @@ public class RabbitMqConfig {
 
     @Bean
     public Queue queue() {
-        return new Queue(AMQP_RESOURCE_NOTIFICATION_QUEUE, true, true, true);
+        return new Queue(AMQP_RESOURCE_NOTIFICATION_QUEUE, true, false, true);
     }
 
     @Bean

@@ -25,6 +25,7 @@ dependencies {
 	implementation 'org.apache.tika:tika-core:2.8.0'
 	implementation 'org.apache.tika:tika-parsers:2.8.0'
 	implementation 'org.apache.tika:tika-parsers-standard-package:2.8.0'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.2'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

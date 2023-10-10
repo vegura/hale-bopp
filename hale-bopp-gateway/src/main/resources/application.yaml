@@ -1,0 +1,20 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: hale-bopp-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: song-service
+          uri: lb://Song-Service
+          predicates:
+            - Path=/songs/**
+
+
+        - id: resource-service
+          uri: lb://Resource-Service-Spring
+          predicates:
+            - Path=/resources/**
+

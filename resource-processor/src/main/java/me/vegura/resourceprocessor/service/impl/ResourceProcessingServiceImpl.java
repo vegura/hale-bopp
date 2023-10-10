@@ -1,6 +1,7 @@
 package me.vegura.resourceprocessor.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.vegura.resourceprocessor.consumer.ResourceConnector;
 import me.vegura.resourceprocessor.consumer.SongServiceConnector;
 import me.vegura.resourceprocessor.dto.api.ResourceDTOResponse;
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor @Slf4j
 public class ResourceProcessingServiceImpl implements ResourceProcessingService {
 
     private final ResourceConnector resourceConnector;
@@ -28,6 +29,7 @@ public class ResourceProcessingServiceImpl implements ResourceProcessingService 
     public void getResourceAndParseMetadata(Long resourceId) {
         ResourceDTOResponse resourceDTOResponse = fetchResource(resourceId);
         Mp3MetadataParser.SongMetadata parsingResult = tryParseData(resourceDTOResponse.getResourceData());
+        log.info("Parsed music track from metadata -> {}, artist {}", parsingResult.getName(), parsingResult.getArtist());
         songServiceConnector.pushData(SongCreateMetaRequest.fromSongMeta(parsingResult, resourceId));
     }
 
