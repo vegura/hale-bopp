@@ -1,0 +1,12 @@
+@startuml
+!include c4_lib/C4_Component.puml
+
+LAYOUT_LEFT_RIGHT()
+
+Person(user, "Song Service User", "User")
+System(song_service, "Hale-Bopp", "Song Service")
+System(google_cloud, "Google Cloud", "Partially stores music data")
+
+Rel(user, song_service, "Uploads and Listen to Music")
+Rel(song_service, google_cloud, "Application interacts with Google Cloud")
+@enduml

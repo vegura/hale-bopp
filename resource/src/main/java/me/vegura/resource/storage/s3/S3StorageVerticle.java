@@ -1,4 +1,4 @@
-package me.vegura.resource.storage;
+package me.vegura.resource.storage.s3;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.Message;
@@ -12,7 +12,7 @@ public class S3StorageVerticle extends AbstractVerticle {
 
   private static final Logger logger = LoggerFactory.getLogger(S3StorageVerticle.class);
 
-  public static final String ESB_RESOURCE_SAVE = "resource.save";
+  public static final String ESB_RESOURCE_SAVE = "s3.resource.save";
 
   private final S3StorageService service;
 

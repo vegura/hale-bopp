@@ -1,5 +1,4 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 
 plugins {
   java
@@ -62,13 +61,19 @@ dependencies {
   implementation("io.vertx:vertx-web:$vertxVersion")
   implementation("com.ongres.scram:client:$scramClientVersion")
   implementation("com.amazonaws:aws-java-sdk-s3:$awsVersion")
-  implementation("ch.qos.logback:logback-classic:$logBackVersion")
+
+  implementation("org.slf4j:slf4j-api:2.0.9")
+  implementation("ch.qos.logback:logback-classic:1.4.11")
+
   implementation("io.vertx:vertx-config:$vertxVersion")
   implementation("io.vertx:vertx-codegen:$vertxVersion")
   implementation("io.vertx:vertx-rx-java2:$vertxVersion")
   implementation("io.vertx:vertx-rx-java2-gen:$vertxVersion")
   implementation("io.vertx:vertx-web-validation:$vertxVersion")
   implementation("io.vertx:vertx-service-proxy:$vertxVersion")
+
+  implementation(platform("com.google.cloud:libraries-bom:26.52.0"))
+  implementation("com.google.cloud:google-cloud-storage")
 
   compileOnly("org.projectlombok:lombok:$lombokVersion")
 
@@ -93,12 +98,12 @@ tasks.withType<ShadowJar> {
   mergeServiceFiles()
 }
 
-tasks.withType<Test> {
-  useJUnitPlatform()
-  testLogging {
-    events = setOf(PASSED, SKIPPED, FAILED)
-  }
-}
+//tasks.withType<Test> {
+//  useJUnitPlatform()
+//  testLogging {
+//    events = setOf(PASSED, SKIPPED, FAILED)
+//  }
+//}
 
 tasks.withType<JavaExec> {
   args = listOf("run", mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$launcherClassName", "--on-redeploy=$doOnChange")
@@ -129,7 +134,7 @@ tasks.register<JavaCompile>("generateServiceProxy") {
 
 tasks.compileJava {
   dependsOn(tasks.named("generateServiceProxy"))
-  options.compilerArgs.add("-Acodetrans.output=${projectDir}/src/main")
+//  options.compilerArgs.add("-Acodetrans.output=${projectDir}/src/main")
 }
 
 tasks.clean {
