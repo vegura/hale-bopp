@@ -43,6 +43,16 @@ public class ResourceController {
         return ResponseEntity.ok(maybeResource.get());
     }
 
+    @GetMapping("{id}/blob")
+    public ResponseEntity<?> getResourceCloudIdentifier(@PathVariable("id") Long id) {
+        Optional<String> maybeResourceId = resourceService.getResourceBLOBId(id);
+
+        if (maybeResourceId.isEmpty())
+            return (ResponseEntity<?>) ResponseEntity.notFound();
+
+        return ResponseEntity.ok(maybeResourceId.get());
+    }
+
     @GetMapping("{id}/raw")
     public @ResponseBody byte[] getRawDataById(@PathVariable("id") Long id) {
         Optional<ResourceResponse> maybeResource = resourceService.getResourceBy(id);

@@ -15,7 +15,7 @@ public class ApiVerticle extends AbstractVerticle {
     httpRESTResourceController.registerHandlingRESTRoutes(router);
     vertx.createHttpServer()
       .requestHandler(router)
-      .listen(8088, http -> {
+      .listen(8099, http -> {
         if (http.succeeded()) {
           System.out.println("HTTP server started on port 8088");
         } else {

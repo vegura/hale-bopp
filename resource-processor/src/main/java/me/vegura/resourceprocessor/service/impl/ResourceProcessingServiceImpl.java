@@ -26,7 +26,7 @@ public class ResourceProcessingServiceImpl implements ResourceProcessingService 
     private final Mp3MetadataParser songParser;
 
     @Override
-    public void getResourceAndParseMetadata(Long resourceId) {
+    public void getResourceAndParseMetadata(Long resourceId) throws ResourceParsingException {
         ResourceDTOResponse resourceDTOResponse = fetchResource(resourceId);
         Mp3MetadataParser.SongMetadata parsingResult = tryParseData(resourceDTOResponse.getResourceData());
         log.info("Parsed music track from metadata -> {}, artist {}", parsingResult.getName(), parsingResult.getArtist());
@@ -36,7 +36,7 @@ public class ResourceProcessingServiceImpl implements ResourceProcessingService 
     private Mp3MetadataParser.SongMetadata tryParseData(byte[] resourceData) {
         try {
             return songParser.parseMetadataFrom(resourceData);
-        } catch (TikaException | IOException | SAXException e) {
+        } catch (TikaException | IOException | SAXException | RuntimeException e) {
             throw new ResourceParsingException(e);
         }
     }

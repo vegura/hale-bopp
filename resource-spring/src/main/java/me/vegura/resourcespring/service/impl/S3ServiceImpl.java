@@ -1,7 +1,8 @@
 package me.vegura.resourcespring.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import me.vegura.resourcespring.service.AwsS3Service;
+import me.vegura.resourcespring.service.BLOBService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.ResponseBytes;
@@ -21,30 +22,31 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
-public class AwsS3ServiceImpl implements AwsS3Service {
+@Profile("s3")
+public class S3ServiceImpl implements BLOBService {
 
     private final S3AsyncClient s3Client;
     private final ThreadPoolTaskExecutor taskExecutor;
 
     @Override
-    public void putObject(String bucketName, String s3Key, InputStream inputStream, long size) {
+    public void putObject(String bucketName, String objectName, InputStream inputStream, long size) {
         var putRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
-                .key(s3Key)
+                .key(objectName)
                 .build();
         var requestBody = AsyncRequestBody.fromInputStream(inputStream, size, taskExecutor.getThreadPoolExecutor());
         s3Client.putObject(putRequest, requestBody);
     }
 
     @Override
-    public CompletableFuture<ResponseBytes<GetObjectResponse>> getObject(String bucketName, String s3Key) {
-        var getObjectRequest = GetObjectRequest.builder().bucket(bucketName).key(s3Key).build();
+    public CompletableFuture<ResponseBytes<GetObjectResponse>> getObject(String bucketName, String objectName) {
+        var getObjectRequest = GetObjectRequest.builder().bucket(bucketName).key(objectName).build();
         return s3Client.getObject(getObjectRequest, AsyncResponseTransformer.toBytes());
     }
 
     @Override
-    public CompletableFuture<DeleteObjectResponse> removeObject(String bucketName, String s3Key) {
-        var deleteObjectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(s3Key).build();
+    public CompletableFuture<DeleteObjectResponse> removeObject(String bucketName, String objectName) {
+        var deleteObjectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(objectName).build();
         return s3Client.deleteObject(deleteObjectRequest);
     }
 

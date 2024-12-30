@@ -10,4 +10,5 @@ public interface ResourceService {
     ResourceCreationRes createResource(byte[] resource);
     Optional<ResourceResponse> getResourceBy(Long id);
     List<Long> deleteBy(List<Long> ids);
+    Optional<String> getResourceBLOBId(Long resourceId);
 }

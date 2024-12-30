@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import me.vegura.resourceprocessor.exceptions.ResourceParsingException;
 import me.vegura.resourceprocessor.service.ResourceProcessingService;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
@@ -25,7 +25,9 @@ public class ResourceConsumer {
             ResourceQueueRequest resourceCreationRequest = tryMappingRequest(message);
             resourceService.getResourceAndParseMetadata(resourceCreationRequest.getId());
         } catch (ListenerExecutionFailedException ex) {
-            log.error("Error processing message -> {}", message);
+            log.error("Listener failed -> {}", message);
+        } catch (ResourceParsingException exception) {
+            log.error("Error parsing -> {}", exception.getMessage());
         }
     }
 

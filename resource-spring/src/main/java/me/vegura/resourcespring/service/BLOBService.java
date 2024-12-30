@@ -8,10 +8,10 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 
-public interface AwsS3Service {
-    void putObject(String bucketName, String s3Key, InputStream inputStream, long size);
-    CompletableFuture<ResponseBytes<GetObjectResponse>> getObject(String bucketName, String s3Key);
-    CompletableFuture<DeleteObjectResponse> removeObject(String bucketName, String s3Key);
+public interface BLOBService {
+    void putObject(String bucketName, String objectName, InputStream inputStream, long size);
+    CompletableFuture<?> getObject(String bucketName, String objectName);
+    CompletableFuture<DeleteObjectResponse> removeObject(String bucketName, String objectName);
     CompletableFuture<CopyObjectResponse> copyObject(String fromBucket, String fromKey, String toBucket, String toKey);
     void moveObject(String fromBucket, String fromKey, String toBucket, String toKey);
 }

@@ -71,6 +71,7 @@ dependencies {
   implementation("io.vertx:vertx-rx-java2-gen:$vertxVersion")
   implementation("io.vertx:vertx-web-validation:$vertxVersion")
   implementation("io.vertx:vertx-service-proxy:$vertxVersion")
+  implementation("io.vertx:vertx-rabbitmq-client:4.5.11")
 
   implementation(platform("com.google.cloud:libraries-bom:26.52.0"))
   implementation("com.google.cloud:google-cloud-storage")

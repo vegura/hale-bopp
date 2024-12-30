@@ -27,6 +27,9 @@ dependencies {
 	implementation 'org.apache.tika:tika-parsers-standard-package:2.8.0'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.2'
 
+	implementation 'net.jthink:jaudiotagger:3.0.1'
+	implementation 'com.mpatric:mp3agic:0.9.1'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

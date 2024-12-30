@@ -1,5 +1,37 @@
 @startuml
 !include c4_lib/C4_Component.puml
 
+!$COLOR_GREY = "#ddd"
+
+Person(user, "Application user")
+System_Boundary(c1, "Hale-Bopp Infrastructure") {
+    Container(song_service, "Song Service", "Spring", "Stores Metadata about present music")
+    Container(resource_processor_service, "Resource Processing Service", "Spring", "Parsing music metadata, orchestrating the flow")
+    Container(resource_service, "Resource Storing Service", "Java Vert.x", "CRUD for resources, serving in streaming way resources. SOA application")
+    Container(gateway, "Gateway", "Spring", "API Gateway for application")
+    Container(service_discovery, "Service Discovery", "Eureka", "Client-side service discovery")
+    ContainerDb(song_meta_db, "Song DB", "Postgres", "DB for storing song metadata")
+    ContainerDb(resource_metadata_db, "Resource DB", "Postgres", "Stores resource Metadata")
+    ContainerQueue(resource_processing_rabbit_mq, "Communication Queue")
+}
+
+System_Boundary(c2, "Google Cloud") {
+    Container(cloud_storage, "Cloud Storage Service", "", "Stores binary resource data")
+}
+
+Rel(user, gateway, "Uploading music")
+Rel(gateway, resource_processor_service, "Redirecting to upload music")
+Rel(resource_service, cloud_storage, "Storing binary resource")
+Rel(resource_service, resource_metadata_db, "Storing resource metadata")
+Rel(resource_processor_service, resource_processing_rabbit_mq, "Sending resource chunks")
+Rel(resource_processing_rabbit_mq, resource_service, "Sending resource chunks")
+Rel(resource_processor_service, song_service, "Sending parsed data to store")
+Rel(song_service, song_meta_db, "Stores song metadata")
+
+UpdateRelStyle($lineColor=$COLOR_GREY, $textColor=$COLOR_GREY)
+Rel(song_service, service_discovery, "discovery")
+Rel(resource_service, service_discovery, "discovery")
+Rel(resource_processor_service, service_discovery, "discovery")
+
 
 @enduml

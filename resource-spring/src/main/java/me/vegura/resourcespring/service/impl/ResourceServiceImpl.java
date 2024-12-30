@@ -8,12 +8,9 @@ import me.vegura.resourcespring.domain.ResourceMetadata;
 import me.vegura.resourcespring.dto.ResourceCreationRes;
 import me.vegura.resourcespring.dto.ResourceResponse;
 import me.vegura.resourcespring.repository.ResourceMetadataRepository;
-import me.vegura.resourcespring.service.AwsS3Service;
+import me.vegura.resourcespring.service.BLOBService;
 import me.vegura.resourcespring.service.ResourceService;
 import me.vegura.resourcespring.service.SignatureService;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor @Slf4j
 public class ResourceServiceImpl implements ResourceService {
 
-    private static final String BUCKET_NAME = "hale-bopp-music2";
+    private static final String BUCKET_NAME = "hale-bopp-application-data";
 
     @Value("${rabbitmq.resource-upload.notification.routingkey}")
     private String resourceUploadNotificationRoutingKey;
@@ -39,14 +36,14 @@ public class ResourceServiceImpl implements ResourceService {
     private String resourceUploadNotificationExchange;
 
     private final SignatureService signatureService;
-    private final AwsS3Service s3Service;
+    private final BLOBService blobService;
     private final ResourceMetadataRepository resourceMetadataRepository;
     private final RabbitTemplate mqTemplate;
 
     @Override
     public ResourceCreationRes createResource(byte[] resource) {
         ResourceMetadata metadata = createMetadataFrom(resource);
-        s3Service.putObject(BUCKET_NAME,
+        blobService.putObject(BUCKET_NAME,
                 metadata.getResourceKey().toString(),
                 new ByteArrayInputStream(resource),
                 resource.length);
@@ -87,9 +84,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     private byte[] tryReadingFromS3(String resourceKey) {
         try {
-            ResponseBytes<GetObjectResponse> resourceResponseByteStream = s3Service.getObject(
-                    BUCKET_NAME, resourceKey).get();
-            return resourceResponseByteStream.asByteArray();
+            return (byte []) blobService.getObject(BUCKET_NAME, resourceKey).get();
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -103,11 +98,21 @@ public class ResourceServiceImpl implements ResourceService {
                 .map(Optional::get)
                 .toList();
 
-        resourceMetadataToDelete.forEach(it -> s3Service.removeObject(BUCKET_NAME, it.getResourceKey().toString()));
+        resourceMetadataToDelete.forEach(it -> blobService.removeObject(BUCKET_NAME, it.getResourceKey().toString()));
         resourceMetadataRepository.deleteAll(resourceMetadataToDelete);
         return resourceMetadataToDelete.stream()
                 .map(ResourceMetadata::getId)
                 .toList();
+    }
+
+    @Override
+    public Optional<String> getResourceBLOBId(Long resourceId) {
+        Optional<ResourceMetadata> maybeResourceMetadata = resourceMetadataRepository.findById(resourceId);
+        if (maybeResourceMetadata.isEmpty())
+            return Optional.empty();
+
+        ResourceMetadata resourceMetadata = maybeResourceMetadata.get();
+        return Optional.ofNullable(resourceMetadata.getResourceKey().toString());
     }
 
     private ResourceMetadata createMetadataFrom(byte[] array) {

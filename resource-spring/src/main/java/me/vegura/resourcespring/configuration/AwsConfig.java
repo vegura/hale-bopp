@@ -26,7 +26,6 @@ public class AwsConfig {
     @Value("${access.key.secret}")
     private String accessKeySecret;
 
-    @Bean
     public S3AsyncClient s3Client(@Value("${aws.isLocal}") boolean isLocal) {
         AwsCredentialsProvider creds = StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(accessKeyId, accessKeySecret));
